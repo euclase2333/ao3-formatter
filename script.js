@@ -33,13 +33,13 @@
     'Dashboard -> Skins -> Create Work Skin -> 粘贴 -> 保存。\n' +
     '然后在作品编辑页面的 "Select Work Skin" 里选这个皮肤。\n' +
     '\n' +
-    '.fs-large { font-size: 1.3em; }\n' +
-    '.fs-small { font-size: 0.85em; }\n' +
-    '.lh-tight { line-height: 1.2; }\n' +
-    '.lh-loose { line-height: 2; }\n' +
-    '.sp-tight { margin-top: 0.3em; margin-bottom: 0.3em; }\n' +
-    '.sp-loose { margin-top: 1.5em; margin-bottom: 1.5em; }\n' +
-    '.indent { text-indent: 2em; }\n' +
+    '#workskin .fs-large { font-size: 1.3em; }\n' +
+    '#workskin .fs-small { font-size: 0.85em; }\n' +
+    '#workskin .lh-tight { line-height: 1.2; }\n' +
+    '#workskin .lh-loose { line-height: 2; }\n' +
+    '#workskin .sp-tight { margin-top: 0.3em; margin-bottom: 0.3em; }\n' +
+    '#workskin .sp-loose { margin-top: 1.5em; margin-bottom: 1.5em; }\n' +
+    '#workskin .indent { text-indent: 2em; }\n' +
     '-->';
 
   // ---------- 元素引用 ----------
@@ -204,6 +204,14 @@
 
   // ---------- 右侧按钮：统一绑定 ----------
   document.querySelectorAll('.options-panel [data-action]').forEach(btn => {
+    // 关键修复：阻止按钮在 mousedown 时抢走 contenteditable 的焦点。
+    // 如果不加这一句，鼠标刚按下时浏览器就会把焦点切到按钮上，
+    // 预览区里刚选中的文字会立刻"取消选中"，等 click 事件触发时
+    // 选区已经没了，后面的格式化操作找不到目标段落，表现为"点击没反应"。
+    btn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+    });
+
     btn.addEventListener('click', () => {
       const action = btn.getAttribute('data-action');
       previewArea.focus();
