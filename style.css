@@ -1,18 +1,20 @@
 /* ============================================================
    AO3 排版助手 - 样式表
-   配色说明：主白色 + 蓝色点缀，简洁清爽
+   配色说明：灰色为主的中性底色 + 降饱和加深的蓝色点缀；
+   文本输入区 / 预览区始终保持纯白，与灰色面板形成对比。
    ============================================================ */
 
 :root {
-  --ink: #202430;          /* 主文字色，近黑 */
-  --ink-soft: #6b7280;     /* 次要文字 */
-  --paper: #ffffff;        /* 页面底色：纯白 */
-  --paper-panel: #ffffff;  /* 面板底色：纯白 */
-  --line: #e2e5ea;         /* 分隔线/边框：浅灰 */
-  --accent: #2563eb;       /* 蓝色点缀，用于按钮/标题/高亮 */
-  --accent-dark: #1d4ed8;  /* 深一点的蓝，用于 hover */
-  --accent-soft: #eaf2ff;  /* 浅蓝底色，用于 hover 背景 */
-  --ok: #2563eb;           /* 状态提示色，跟主题统一用蓝色 */
+  --ink: #24272c;          /* 主文字色，近黑 */
+  --ink-soft: #6b7280;     /* 次要文字，灰色 */
+  --paper: #e6e8eb;        /* 页面底色：灰色，作为中性大底色 */
+  --paper-panel: #dfe2e6;  /* 面板底色：灰色，与白色文本区形成对比 */
+  --white: #ffffff;        /* 文本区域专用：始终保持纯白 */
+  --line: #c6cbd2;         /* 分隔线/边框：中灰 */
+  --accent: #3d5a76;       /* 降饱和、加深的蓝，用于按钮/标题/高亮 */
+  --accent-dark: #2c4459;  /* 更深一点的蓝，用于 hover */
+  --accent-soft: #d6dee4;  /* 浅灰蓝底色，用于 hover 背景 */
+  --ok: #3d5a76;           /* 状态提示色，跟主题统一用灰蓝色 */
   --radius: 6px;
   --font-ui: "Microsoft YaHei", -apple-system, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Segoe UI", sans-serif;
 }
@@ -20,49 +22,37 @@
 * { box-sizing: border-box; }
 
 html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-ui);
   line-height: 1.6;
+  /* 页面本身不滚动：左右两栏固定不动，只有预览区内部可以滚动 */
+  overflow: hidden;
 }
 
-/* ---------- 顶部 ---------- */
-.site-header {
-  padding: 28px 24px 20px;
-  border-bottom: 1px solid var(--line);
-  text-align: center;
+body {
+  display: flex;
+  flex-direction: column;
 }
 
-.site-header h1 {
-  font-family: var(--font-ui);
-  font-weight: 700;
-  font-size: 1.9rem;
-  margin: 0 0 8px;
-  letter-spacing: 0.02em;
-  color: var(--accent);
-}
-
-.subtitle {
-  max-width: 640px;
-  margin: 0 auto;
-  color: var(--ink-soft);
-  font-size: 0.92rem;
-}
-
-/* ---------- 三栏主体：左 20% / 中 60% / 右 20% ---------- */
+/* ---------- 三栏主体：左 20% / 中 60% / 右 20%，撑满除底部操作条外的整页高度 ---------- */
 .workspace {
+  flex: 1 1 auto;
+  min-height: 0; /* 允许子项 overflow 生效，而不是把 flex 容器撑高 */
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;
   gap: 16px;
   padding: 20px;
-  align-items: start;
+  align-items: stretch;
 }
 
 @media (max-width: 960px) {
   .workspace {
     grid-template-columns: 1fr;
+    overflow-y: auto; /* 窄屏单栏堆叠时退化为可整体滚动，保证可用性 */
   }
 }
 
@@ -71,9 +61,13 @@ html, body {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 16px;
-  min-height: 420px;
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
+  /* 左右两栏（输入区、选项区）本身不出现滚动条，内容固定；
+     中间预览区单独设置 overflow-y: auto，见 .preview-area */
+  overflow: hidden;
 }
 
 .panel h2 {
@@ -92,16 +86,17 @@ html, body {
 /* ---------- 输入区 ---------- */
 #rawInput {
   flex: 1;
-  min-height: 300px;
-  resize: vertical;
+  min-height: 0;
+  resize: none; /* 面板高度固定，改为内部自身滚动，不再允许拖拽改变高度 */
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 12px;
   font-size: 0.95rem;
   font-family: var(--font-ui);
   line-height: 1.7;
-  background: #ffffff;
+  background: var(--white); /* 文本区域始终保持纯白 */
   color: var(--ink);
+  overflow-y: auto;
 }
 
 #rawInput:focus {
@@ -112,12 +107,12 @@ html, body {
 /* ---------- 预览区 ---------- */
 .preview-area {
   flex: 1;
-  min-height: 300px;
-  overflow-y: auto;
+  min-height: 0;
+  overflow-y: auto; /* 全页唯一会出现滚动条的地方 */
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 20px 24px;
-  background: #ffffff;
+  background: var(--white); /* 文本区域始终保持纯白 */
 
   /* 要求：微软雅黑优先，回退到常见中文黑体 */
   font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Heiti SC", sans-serif;
@@ -266,6 +261,7 @@ html, body {
 
 /* ---------- 底部 ---------- */
 .site-footer {
+  flex-shrink: 0;
   padding: 20px 24px 32px;
   display: flex;
   gap: 14px;
