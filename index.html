@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AO3 排版助手 · ao3-formatter</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 顶部标题区 -->
+  <header class="site-header">
+    <h1>AO3 排版助手</h1>
+    <p class="subtitle">
+      粘贴正文 → 调整格式 → 下载可直接粘进 AO3「HTML 模式」的代码。
+      字号 / 行距 / 段距 / 首行缩进会自动转换为 AO3 兼容的 Work Skin 样式表，不使用行内 style。
+    </p>
+  </header>
+
+  <!-- 主体三栏 -->
+  <main class="workspace">
+
+    <!-- 左：输入区 -->
+    <section class="panel input-panel">
+      <h2>① 输入原文</h2>
+      <p class="panel-hint">把你的正文粘贴到下面的方框里，会自动按空行分段。也可以直接在方框里改字。</p>
+      <textarea id="rawInput" placeholder="在这里粘贴你的文字……"></textarea>
+      <button id="loadBtn" class="btn btn-primary">载入到预览区 →</button>
+    </section>
+
+    <!-- 中：预览区 -->
+    <section class="panel preview-panel">
+      <h2>② 预览效果</h2>
+      <p class="panel-hint">这里模拟 AO3 默认阅读样式。选中文字后点右侧按钮即可改格式，效果立即显示在这里。</p>
+      <div id="previewArea" class="preview-area" contenteditable="true" spellcheck="false">
+        <p>先在左边粘贴文字，点击"载入到预览区"，或者直接在这里开始写。</p>
+      </div>
+    </section>
+
+    <!-- 右：选项区 -->
+    <aside class="panel options-panel">
+      <h2>③ 格式选项</h2>
+      <p class="panel-hint">先在中间预览区选中一段文字，再点击下面的按钮。</p>
+
+      <div class="option-group">
+        <h3>基础格式（AO3 原生支持）</h3>
+        <div class="btn-row">
+          <button class="btn" data-action="bold" title="给选中文字加粗">
+            <strong>B</strong> 加粗
+          </button>
+          <button class="btn" data-action="italic" title="给选中文字变斜体">
+            <em>I</em> 斜体
+          </button>
+          <button class="btn" data-action="blockquote" title="把选中段落变成引用块">
+            " 引用
+          </button>
+        </div>
+      </div>
+
+      <div class="option-group">
+        <h3>字号（需要配套 Work Skin）</h3>
+        <p class="option-desc">改变选中文字的大小，生成 class="fs-large / fs-normal / fs-small"。</p>
+        <div class="btn-row">
+          <button class="btn" data-action="fs-large">大字号</button>
+          <button class="btn" data-action="fs-normal">正常字号</button>
+          <button class="btn" data-action="fs-small">小字号</button>
+        </div>
+      </div>
+
+      <div class="option-group">
+        <h3>行间距（需要配套 Work Skin）</h3>
+        <p class="option-desc">改变选中段落内文字的行距，生成 class="lh-tight / lh-normal / lh-loose"。</p>
+        <div class="btn-row">
+          <button class="btn" data-action="lh-tight">紧凑</button>
+          <button class="btn" data-action="lh-normal">正常</button>
+          <button class="btn" data-action="lh-loose">宽松</button>
+        </div>
+      </div>
+
+      <div class="option-group">
+        <h3>段间距（需要配套 Work Skin）</h3>
+        <p class="option-desc">改变选中段落之间的距离，生成 class="sp-tight / sp-normal / sp-loose"。</p>
+        <div class="btn-row">
+          <button class="btn" data-action="sp-tight">紧凑</button>
+          <button class="btn" data-action="sp-normal">正常</button>
+          <button class="btn" data-action="sp-loose">宽松</button>
+        </div>
+      </div>
+
+      <div class="option-group">
+        <h3>首行缩进（需要配套 Work Skin）</h3>
+        <p class="option-desc">给选中段落的第一行加两个字符的缩进，生成 class="indent"，再点一次可取消。</p>
+        <div class="btn-row">
+          <button class="btn" data-action="indent">开关首行缩进</button>
+        </div>
+      </div>
+
+      <div class="option-group">
+        <h3>其他</h3>
+        <div class="btn-row">
+          <button class="btn btn-warn" data-action="clear-format" title="去掉选中文字的所有格式，只留纯文本">
+            清除选中格式
+          </button>
+          <button class="btn" data-action="undo" title="调用浏览器自带的撤销">
+            撤销上一步
+          </button>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- 底部操作区 -->
+  <footer class="site-footer">
+    <button id="downloadBtn" class="btn btn-primary btn-large">⭳ 下载 ao3-formatted.txt</button>
+    <button id="copyBtn" class="btn btn-large">⧉ 复制到剪贴板</button>
+    <span id="statusMsg" class="status-msg" role="status"></span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
