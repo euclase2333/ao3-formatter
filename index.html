@@ -37,7 +37,7 @@
     <!-- 右：选项区 -->
     <aside class="panel options-panel">
       <h2>格式选项</h2>
-      <p class="panel-hint">加粗、斜体、引用、字号、首行缩进：先在中间预览区选中一段文字，再点按钮。行间距、段间距不用选中，直接调整下面的数字，全文立即生效。</p>
+      <p class="panel-hint">加粗、斜体、引用、字号：先在中间预览区选中一段文字，再点按钮。行间距、段间距不用选中，直接调整下面的数字，全文立即生效。首行缩进比较特殊：不选中直接点 = 全文生效，选中某段再点 = 只对这一段单独开关。</p>
 
       <div class="option-group">
         <h3>基础格式（AO3 原生支持）</h3>
@@ -86,7 +86,7 @@
 
       <div class="option-group">
         <h3>首行缩进（需要配套 Work Skin）</h3>
-        <p class="option-desc">「载入到预览区」时默认给所有段落加上两字符缩进（class="indent"）。如果想给个别段落取消/恢复，选中该段落后点这个按钮单独开关。</p>
+        <p class="option-desc">「载入到预览区」时默认不缩进，避免和你自己手动打的缩进重复。不选中任何文字直接点这个按钮 = 对全文段落统一开关；先选中某一段再点 = 只单独开关这一段。</p>
         <div class="btn-row">
           <button class="btn" data-action="indent">开关首行缩进</button>
         </div>
@@ -107,6 +107,6 @@
     </aside>
   </main>
 
-  <script src="script.js?v=6"></script>
+  <script src="script.js?v=7"></script>
 </body>
 </html>
