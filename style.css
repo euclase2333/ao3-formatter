@@ -1,19 +1,20 @@
 /* ============================================================
    AO3 排版助手 - 样式表
-   配色说明：灰色为主的中性底色 + 降饱和加深的蓝色点缀；
-   文本输入区 / 预览区始终保持纯白，与灰色面板形成对比。
+   配色说明：GitHub 风格的中性浅灰底色 + 降饱和加深的蓝色点缀；
+   面板与页面同色、靠边框区分，避免大块深灰；
+   文本输入区 / 预览区始终保持纯白。
    ============================================================ */
 
 :root {
-  --ink: #24272c;          /* 主文字色，近黑 */
-  --ink-soft: #6b7280;     /* 次要文字，灰色 */
-  --paper: #e6e8eb;        /* 页面底色：灰色，作为中性大底色 */
-  --paper-panel: #dfe2e6;  /* 面板底色：灰色，与白色文本区形成对比 */
+  --ink: #1f2328;          /* 主文字色，GitHub 风格的中性深灰 */
+  --ink-soft: #656d76;     /* 次要文字，GitHub 风格的中性灰 */
+  --paper: #f6f8fa;        /* 页面底色：GitHub 风格的浅中性灰 */
+  --paper-panel: #f6f8fa;  /* 面板底色：同一浅灰，靠边框和白色文本区做区分，不再做深灰块 */
   --white: #ffffff;        /* 文本区域专用：始终保持纯白 */
-  --line: #c6cbd2;         /* 分隔线/边框：中灰 */
+  --line: #d0d7de;         /* 分隔线/边框：GitHub 风格的中性灰 */
   --accent: #3d5a76;       /* 降饱和、加深的蓝，用于按钮/标题/高亮 */
   --accent-dark: #2c4459;  /* 更深一点的蓝，用于 hover */
-  --accent-soft: #d6dee4;  /* 浅灰蓝底色，用于 hover 背景 */
+  --accent-soft: #eaeef2;  /* 浅灰蓝底色，用于 hover 背景 */
   --ok: #3d5a76;           /* 状态提示色，跟主题统一用灰蓝色 */
   --radius: 6px;
   --font-ui: "Microsoft YaHei", -apple-system, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Segoe UI", sans-serif;
@@ -148,6 +149,7 @@ body {
 /* ---------- 选项区 ---------- */
 .options-panel {
   gap: 4px;
+  overflow-y: auto; /* 独立滚动条：右侧选项内容较多时可单独滚动，不影响左右两栏 */
 }
 
 .option-group {
@@ -259,16 +261,20 @@ body {
   font-size: 0.95rem;
 }
 
-/* ---------- 底部 ---------- */
-.site-footer {
+/* ---------- 预览区下方的操作按钮（下载/复制） ----------
+   放在中间预览面板内部，而不是页面级 footer，
+   这样左右两栏（输入区、格式选项）可以撑满整页高度，
+   下载/复制按钮也只占预览区正下方的宽度，不会横跨全页。 */
+.preview-actions {
   flex-shrink: 0;
-  padding: 20px 24px 32px;
+  margin-top: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
   display: flex;
   gap: 14px;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  border-top: 1px solid var(--line);
 }
 
 .status-msg {
