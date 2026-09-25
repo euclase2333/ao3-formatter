@@ -76,29 +76,25 @@
       .replace(/>/g, '&gt;');
   }
 
-  // ---------- ① 载入到预览区：按换行符分段（每一行就是一段，空行直接跳过） ----------
+  // ---------- ① 载入到预览区：按换行符分段（每一行就是一段，空行保留为空段落，默认首行缩进） ----------
   loadBtn.addEventListener('click', () => {
     const text = rawInput.value;
     if (!text.trim()) {
       setStatus('左边还没有输入文字哦');
       return;
     }
-    const paragraphs = text
-      .split('\n')
-      .map(p => p.trim())
-      .filter(p => p.length > 0);
+    // 每一行都算一段，空行不再跳过，而是保留成一个空段落，
+    // 这样行距/段距（作用在每个 p 上）对空行也同样生效。
+    // 首行缩进默认对所有段落生效（class="indent"），不需要手动选中；
+    // 之后仍可以选中某几段，用右侧「开关首行缩进」按钮单独取消/恢复。
+    const lines = text.split('\n').map(p => p.trim());
 
-    if (paragraphs.length === 0) {
-      setStatus('没有识别到有效段落');
-      return;
-    }
-
-    const html = paragraphs
-      .map(p => '<p>' + escapeHtml(p) + '</p>')
+    const html = lines
+      .map(p => '<p class="indent">' + (p.length > 0 ? escapeHtml(p) : '&nbsp;') + '</p>')
       .join('\n');
 
     previewArea.innerHTML = html;
-    setStatus('已载入 ' + paragraphs.length + ' 段到预览区');
+    setStatus('已载入 ' + lines.length + ' 段到预览区（空行已保留，首行缩进默认开启）');
   });
 
   // ---------- 获取选区涉及到的"块级元素"（预览区的直接子元素） ----------
