@@ -53,7 +53,21 @@ body {
 @media (max-width: 960px) {
   .workspace {
     grid-template-columns: 1fr;
+    gap: 28px; /* 纵向堆叠时加大卡片间距，避免看起来挤在一起 */
+    padding: 16px 16px 28px;
     overflow-y: auto; /* 窄屏单栏堆叠时退化为可整体滚动，保证可用性 */
+  }
+
+  .panel {
+    /* 单栏堆叠后，网格的每一行会按内容自适应高度，
+       此时 .panel 原来的 height: 100% 没有具体高度可以参照，
+       会被浏览器当成 auto，导致内部 flex:1 的输入框/预览区/
+       选项列表被压缩到只剩一点点、看起来像被裁掉了一半。
+       这里显式给每块卡片一个视口相对高度，配合各自内部的滚动条
+       （输入框、预览区、格式选项都各自能单独滚动）。 */
+    height: 75vh;
+    min-height: 340px;
+    max-height: 640px;
   }
 }
 
