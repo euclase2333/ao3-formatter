@@ -4,19 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AO3 排版助手 · ao3-formatter</title>
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
-
-  <!-- 顶部标题区 -->
-  <header class="site-header">
-    <h1>AO3 排版助手</h1>
-    <p class="subtitle">
-      粘贴正文 → 调整格式 → 下载可直接粘进 AO3「HTML 模式」的代码。
-      字号 / 行距 / 段距 / 首行缩进会自动转换为 AO3 兼容的 Work Skin 样式表，不使用行内 style。
-      每一行文字就是一段，行距/段距对全文实时生效，不需要逐段选中。
-    </p>
-  </header>
 
   <!-- 主体三栏 -->
   <main class="workspace">
@@ -90,7 +80,7 @@
 
       <div class="option-group">
         <h3>首行缩进（需要配套 Work Skin）</h3>
-        <p class="option-desc">给选中段落的第一行加两个字符的缩进，生成 class="indent"，再点一次可取消。</p>
+        <p class="option-desc">「载入到预览区」时默认给所有段落加上两字符缩进（class="indent"）。如果想给个别段落取消/恢复，选中该段落后点这个按钮单独开关。</p>
         <div class="btn-row">
           <button class="btn" data-action="indent">开关首行缩进</button>
         </div>
@@ -118,6 +108,6 @@
     <span id="statusMsg" class="status-msg" role="status"></span>
   </footer>
 
-  <script src="script.js?v=2"></script>
+  <script src="script.js?v=3"></script>
 </body>
 </html>
