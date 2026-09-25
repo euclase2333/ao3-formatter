@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AO3 排版助手 · ao3-formatter</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 
@@ -14,6 +14,7 @@
     <p class="subtitle">
       粘贴正文 → 调整格式 → 下载可直接粘进 AO3「HTML 模式」的代码。
       字号 / 行距 / 段距 / 首行缩进会自动转换为 AO3 兼容的 Work Skin 样式表，不使用行内 style。
+      每一行文字就是一段，行距/段距对全文实时生效，不需要逐段选中。
     </p>
   </header>
 
@@ -23,7 +24,7 @@
     <!-- 左：输入区 -->
     <section class="panel input-panel">
       <h2>① 输入原文</h2>
-      <p class="panel-hint">把你的正文粘贴到下面的方框里，会自动按空行分段。也可以直接在方框里改字。</p>
+      <p class="panel-hint">把你的正文粘贴到下面的方框里，会自动按换行分段（每一行算一段）。也可以直接在方框里改字。</p>
       <textarea id="rawInput" placeholder="在这里粘贴你的文字……"></textarea>
       <button id="loadBtn" class="btn btn-primary">载入到预览区 →</button>
     </section>
@@ -40,7 +41,7 @@
     <!-- 右：选项区 -->
     <aside class="panel options-panel">
       <h2>③ 格式选项</h2>
-      <p class="panel-hint">先在中间预览区选中一段文字，再点击下面的按钮。</p>
+      <p class="panel-hint">加粗、斜体、引用、字号、首行缩进：先在中间预览区选中一段文字，再点按钮。行间距、段间距不用选中，直接调整下面的数字，全文立即生效。</p>
 
       <div class="option-group">
         <h3>基础格式（AO3 原生支持）</h3>
@@ -68,22 +69,22 @@
       </div>
 
       <div class="option-group">
-        <h3>行间距（需要配套 Work Skin）</h3>
-        <p class="option-desc">改变选中段落内文字的行距，生成 class="lh-tight / lh-normal / lh-loose"。</p>
-        <div class="btn-row">
-          <button class="btn" data-action="lh-tight">紧凑</button>
-          <button class="btn" data-action="lh-normal">正常</button>
-          <button class="btn" data-action="lh-loose">宽松</button>
+        <h3>行间距（全文生效，无需选中）</h3>
+        <p class="option-desc">直接设置整篇文字的行距倍数，拖动或输入数字即可，立即在预览区生效，下载时自动写进 Work Skin。</p>
+        <div class="number-row">
+          <input type="range" id="lhRange" min="1" max="3" step="0.1" value="1.6">
+          <input type="number" id="lhNumber" min="1" max="3" step="0.1" value="1.6">
+          <span class="unit-label">倍</span>
         </div>
       </div>
 
       <div class="option-group">
-        <h3>段间距（需要配套 Work Skin）</h3>
-        <p class="option-desc">改变选中段落之间的距离，生成 class="sp-tight / sp-normal / sp-loose"。</p>
-        <div class="btn-row">
-          <button class="btn" data-action="sp-tight">紧凑</button>
-          <button class="btn" data-action="sp-normal">正常</button>
-          <button class="btn" data-action="sp-loose">宽松</button>
+        <h3>段间距（全文生效，无需选中）</h3>
+        <p class="option-desc">直接设置整篇段落之间的间距（单位 em），拖动或输入数字即可，立即在预览区生效，下载时自动写进 Work Skin。</p>
+        <div class="number-row">
+          <input type="range" id="spRange" min="0" max="3" step="0.1" value="1">
+          <input type="number" id="spNumber" min="0" max="3" step="0.1" value="1">
+          <span class="unit-label">em</span>
         </div>
       </div>
 
@@ -117,6 +118,6 @@
     <span id="statusMsg" class="status-msg" role="status"></span>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=2"></script>
 </body>
 </html>
