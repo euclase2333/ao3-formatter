@@ -9,10 +9,9 @@
   // ---------- 常量 ----------
 
   // 导出时允许保留的 class 名单（对应配套 Work Skin 里的样式）
+  // 行距/段距不再是按段落挑选的 class，而是全文级别的数值设置，见下面的 currentLH / currentSP
   const WHITELIST_CLASSES = [
     'fs-large', 'fs-small',
-    'lh-tight', 'lh-loose',
-    'sp-tight', 'sp-loose',
     'indent'
   ];
 
@@ -20,27 +19,33 @@
   const KEEP_TAGS = new Set(['P', 'STRONG', 'EM', 'BLOCKQUOTE', 'BR', 'HR', 'UL', 'OL', 'LI']);
 
   // 同一类里的 class 互斥（点一个会把同类的其它 class 去掉）
-  // 注意：*-normal 不在白名单里，是"恢复默认"的意思，导出时会自动被剥离
+  // 注意：fs-normal 不在白名单里，是"恢复默认"的意思，导出时会自动被剥离
   const CLASS_CATEGORY = {
-    'fs-large': 'fs', 'fs-normal': 'fs', 'fs-small': 'fs',
-    'lh-tight': 'lh', 'lh-normal': 'lh', 'lh-loose': 'lh',
-    'sp-tight': 'sp', 'sp-normal': 'sp', 'sp-loose': 'sp'
+    'fs-large': 'fs', 'fs-normal': 'fs', 'fs-small': 'fs'
   };
 
-  const CSS_COMMENT_BLOCK =
-    '<!-- \n' +
-    '把下面这段 CSS 粘贴到 AO3 的 Work Skin 里：\n' +
-    'Dashboard -> Skins -> Create Work Skin -> 粘贴 -> 保存。\n' +
-    '然后在作品编辑页面的 "Select Work Skin" 里选这个皮肤。\n' +
-    '\n' +
-    '#workskin .fs-large { font-size: 1.3em; }\n' +
-    '#workskin .fs-small { font-size: 0.85em; }\n' +
-    '#workskin .lh-tight { line-height: 1.2; }\n' +
-    '#workskin .lh-loose { line-height: 2; }\n' +
-    '#workskin .sp-tight { margin-top: 0.3em; margin-bottom: 0.3em; }\n' +
-    '#workskin .sp-loose { margin-top: 1.5em; margin-bottom: 1.5em; }\n' +
-    '#workskin .indent { text-indent: 2em; }\n' +
-    '-->';
+  // 行距 / 段距：全文级别的数值，不需要选中，随时可调，实时生效
+  let currentLH = 1.6;  // 行距倍数
+  let currentSP = 1;    // 段落上下间距，单位 em
+
+  function buildCssCommentBlock() {
+    return (
+      '<!-- \n' +
+      '把下面这段 CSS 粘贴到 AO3 的 Work Skin 里：\n' +
+      'Dashboard -> Skins -> Create Work Skin -> 粘贴 -> 保存。\n' +
+      '然后在作品编辑页面的 "Select Work Skin" 里选这个皮肤。\n' +
+      '\n' +
+      '#workskin p, #workskin li, #workskin blockquote {\n' +
+      '  line-height: ' + currentLH + ';\n' +
+      '  margin-top: ' + currentSP + 'em;\n' +
+      '  margin-bottom: ' + currentSP + 'em;\n' +
+      '}\n' +
+      '#workskin .fs-large { font-size: 1.3em; }\n' +
+      '#workskin .fs-small { font-size: 0.85em; }\n' +
+      '#workskin .indent { text-indent: 2em; }\n' +
+      '-->'
+    );
+  }
 
   // ---------- 元素引用 ----------
   const rawInput = document.getElementById('rawInput');
@@ -49,6 +54,10 @@
   const downloadBtn = document.getElementById('downloadBtn');
   const copyBtn = document.getElementById('copyBtn');
   const statusMsg = document.getElementById('statusMsg');
+  const lhRange = document.getElementById('lhRange');
+  const lhNumber = document.getElementById('lhNumber');
+  const spRange = document.getElementById('spRange');
+  const spNumber = document.getElementById('spNumber');
 
   let statusTimer = null;
   function setStatus(text) {
@@ -67,16 +76,15 @@
       .replace(/>/g, '&gt;');
   }
 
-  // ---------- ① 载入到预览区：按空行分段 ----------
+  // ---------- ① 载入到预览区：按换行符分段（每一行就是一段，空行直接跳过） ----------
   loadBtn.addEventListener('click', () => {
     const text = rawInput.value;
     if (!text.trim()) {
       setStatus('左边还没有输入文字哦');
       return;
     }
-    // 按一个或多个空行分段；段内的单个换行变成 <br>
     const paragraphs = text
-      .split(/\n\s*\n/)
+      .split('\n')
       .map(p => p.trim())
       .filter(p => p.length > 0);
 
@@ -86,7 +94,7 @@
     }
 
     const html = paragraphs
-      .map(p => '<p>' + escapeHtml(p).replace(/\n/g, '<br>') + '</p>')
+      .map(p => '<p>' + escapeHtml(p) + '</p>')
       .join('\n');
 
     previewArea.innerHTML = html;
@@ -229,12 +237,6 @@
         case 'fs-large':
         case 'fs-normal':
         case 'fs-small':
-        case 'lh-tight':
-        case 'lh-normal':
-        case 'lh-loose':
-        case 'sp-tight':
-        case 'sp-normal':
-        case 'sp-loose':
           applyExclusiveClass(action);
           break;
         case 'indent':
@@ -251,6 +253,50 @@
       }
     });
   });
+
+  // ---------- 行距 / 段距：全文级别，不需要选中，滑块和数字框互相同步，实时生效 ----------
+  const dynamicStyleTag = document.createElement('style');
+  dynamicStyleTag.id = 'dynamicPreviewSpacing';
+  document.head.appendChild(dynamicStyleTag);
+
+  function updatePreviewSpacing() {
+    dynamicStyleTag.textContent =
+      '.preview-area p, .preview-area li, .preview-area blockquote {' +
+      'line-height: ' + currentLH + ';' +
+      'margin-top: ' + currentSP + 'em;' +
+      'margin-bottom: ' + currentSP + 'em;' +
+      '}';
+  }
+
+  function clampNumber(value, min, max, fallback) {
+    const n = parseFloat(value);
+    if (Number.isNaN(n)) return fallback;
+    return Math.min(max, Math.max(min, n));
+  }
+
+  lhRange.addEventListener('input', () => {
+    currentLH = clampNumber(lhRange.value, 1, 3, currentLH);
+    lhNumber.value = currentLH;
+    updatePreviewSpacing();
+  });
+  lhNumber.addEventListener('input', () => {
+    currentLH = clampNumber(lhNumber.value, 1, 3, currentLH);
+    lhRange.value = currentLH;
+    updatePreviewSpacing();
+  });
+
+  spRange.addEventListener('input', () => {
+    currentSP = clampNumber(spRange.value, 0, 3, currentSP);
+    spNumber.value = currentSP;
+    updatePreviewSpacing();
+  });
+  spNumber.addEventListener('input', () => {
+    currentSP = clampNumber(spNumber.value, 0, 3, currentSP);
+    spRange.value = currentSP;
+    updatePreviewSpacing();
+  });
+
+  updatePreviewSpacing(); // 页面载入时先按默认值生效一次
 
   // ---------- 导出：清洗 HTML，只留白名单标签和白名单 class ----------
   function sanitizeForExport(sourceHtml) {
@@ -314,7 +360,7 @@
       .map(el => el.outerHTML)
       .join('\n');
 
-    return CSS_COMMENT_BLOCK + '\n\n' + bodyHtml + '\n';
+    return buildCssCommentBlock() + '\n\n' + bodyHtml + '\n';
   }
 
   // ---------- 下载 ----------
