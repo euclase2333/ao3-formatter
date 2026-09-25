@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AO3 排版助手 · ao3-formatter</title>
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -13,7 +13,7 @@
 
     <!-- 左：输入区 -->
     <section class="panel input-panel">
-      <h2>① 输入原文</h2>
+      <h2>输入原文</h2>
       <p class="panel-hint">把你的正文粘贴到下面的方框里，会自动按换行分段（每一行算一段）。也可以直接在方框里改字。</p>
       <textarea id="rawInput" placeholder="在这里粘贴你的文字……"></textarea>
       <button id="loadBtn" class="btn btn-primary">载入到预览区 →</button>
@@ -21,16 +21,22 @@
 
     <!-- 中：预览区 -->
     <section class="panel preview-panel">
-      <h2>② 预览效果</h2>
+      <h2>预览效果</h2>
       <p class="panel-hint">这里模拟 AO3 默认阅读样式。选中文字后点右侧按钮即可改格式，效果立即显示在这里。</p>
       <div id="previewArea" class="preview-area" contenteditable="true" spellcheck="false">
         <p>先在左边粘贴文字，点击"载入到预览区"，或者直接在这里开始写。</p>
+      </div>
+
+      <div class="preview-actions">
+        <button id="downloadBtn" class="btn btn-primary btn-large">⭳ 下载 ao3-formatted.txt</button>
+        <button id="copyBtn" class="btn btn-large">⧉ 复制到剪贴板</button>
+        <span id="statusMsg" class="status-msg" role="status"></span>
       </div>
     </section>
 
     <!-- 右：选项区 -->
     <aside class="panel options-panel">
-      <h2>③ 格式选项</h2>
+      <h2>格式选项</h2>
       <p class="panel-hint">加粗、斜体、引用、字号、首行缩进：先在中间预览区选中一段文字，再点按钮。行间距、段间距不用选中，直接调整下面的数字，全文立即生效。</p>
 
       <div class="option-group">
@@ -101,13 +107,6 @@
     </aside>
   </main>
 
-  <!-- 底部操作区 -->
-  <footer class="site-footer">
-    <button id="downloadBtn" class="btn btn-primary btn-large">⭳ 下载 ao3-formatted.txt</button>
-    <button id="copyBtn" class="btn btn-large">⧉ 复制到剪贴板</button>
-    <span id="statusMsg" class="status-msg" role="status"></span>
-  </footer>
-
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=6"></script>
 </body>
 </html>
