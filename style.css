@@ -1,20 +1,20 @@
 /* ============================================================
    AO3 排版助手 - 样式表
-   配色说明：墨蓝 + 米白纸张色，呼应"写作 / 手稿"的主题
+   配色说明：主白色 + 蓝色点缀，简洁清爽
    ============================================================ */
 
 :root {
-  --ink: #2c2a4a;          /* 深墨蓝，标题和强调用 */
-  --ink-soft: #514f74;     /* 次要文字 */
-  --paper: #faf7f0;        /* 米白纸张底色 */
-  --paper-panel: #ffffff;  /* 面板底色 */
-  --line: #e0dcd0;         /* 分隔线 */
-  --accent: #b5482f;       /* 火漆红，按钮强调色 */
-  --accent-soft: #f1e4de;  /* 强调色的浅底 */
-  --ok: #3c6e52;           /* 成功提示色 */
+  --ink: #202430;          /* 主文字色，近黑 */
+  --ink-soft: #6b7280;     /* 次要文字 */
+  --paper: #ffffff;        /* 页面底色：纯白 */
+  --paper-panel: #ffffff;  /* 面板底色：纯白 */
+  --line: #e2e5ea;         /* 分隔线/边框：浅灰 */
+  --accent: #2563eb;       /* 蓝色点缀，用于按钮/标题/高亮 */
+  --accent-dark: #1d4ed8;  /* 深一点的蓝，用于 hover */
+  --accent-soft: #eaf2ff;  /* 浅蓝底色，用于 hover 背景 */
+  --ok: #2563eb;           /* 状态提示色，跟主题统一用蓝色 */
   --radius: 6px;
-  --font-ui: -apple-system, "PingFang SC", "Segoe UI", "Microsoft YaHei", sans-serif;
-  --font-serif: Georgia, "Noto Serif SC", "Songti SC", serif;
+  --font-ui: "Microsoft YaHei", -apple-system, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Segoe UI", sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -36,11 +36,12 @@ html, body {
 }
 
 .site-header h1 {
-  font-family: var(--font-serif);
+  font-family: var(--font-ui);
   font-weight: 700;
   font-size: 1.9rem;
   margin: 0 0 8px;
   letter-spacing: 0.02em;
+  color: var(--accent);
 }
 
 .subtitle {
@@ -50,10 +51,10 @@ html, body {
   font-size: 0.92rem;
 }
 
-/* ---------- 三栏主体 ---------- */
+/* ---------- 三栏主体：左 20% / 中 60% / 右 20% ---------- */
 .workspace {
   display: grid;
-  grid-template-columns: 1fr 1.3fr 1.1fr;
+  grid-template-columns: 1fr 3fr 1fr;
   gap: 16px;
   padding: 20px;
   align-items: start;
@@ -76,10 +77,10 @@ html, body {
 }
 
 .panel h2 {
-  font-family: var(--font-serif);
+  font-family: var(--font-ui);
   font-size: 1.05rem;
   margin: 0 0 6px;
-  color: var(--ink);
+  color: var(--accent);
 }
 
 .panel-hint {
@@ -99,7 +100,7 @@ html, body {
   font-size: 0.95rem;
   font-family: var(--font-ui);
   line-height: 1.7;
-  background: #fffdf9;
+  background: #ffffff;
   color: var(--ink);
 }
 
@@ -108,7 +109,7 @@ html, body {
   outline-offset: 1px;
 }
 
-/* ---------- 预览区：模拟 AO3 默认阅读样式 ---------- */
+/* ---------- 预览区 ---------- */
 .preview-area {
   flex: 1;
   min-height: 300px;
@@ -118,11 +119,11 @@ html, body {
   padding: 20px 24px;
   background: #ffffff;
 
-  /* AO3 默认正文大致观感 */
-  font-family: Georgia, "Times New Roman", serif;
+  /* 要求：微软雅黑优先，回退到常见中文黑体 */
+  font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Heiti SC", sans-serif;
   font-size: 16px;
   line-height: 1.6;
-  color: #222;
+  color: var(--ink);
 }
 
 .preview-area:focus {
@@ -137,8 +138,8 @@ html, body {
 .preview-area blockquote {
   margin: 1em 1.5em;
   padding: 0.4em 1em;
-  border-left: 3px solid var(--line);
-  color: #444;
+  border-left: 3px solid var(--accent);
+  color: var(--ink-soft);
 }
 
 /* 预览区内，白名单 class 的实际效果（导出后靠 Work Skin 实现，这里先本地模拟） */
@@ -189,7 +190,7 @@ html, body {
 /* ---------- 按钮通用样式 ---------- */
 .btn {
   border: 1px solid var(--line);
-  background: var(--paper-panel);
+  background: #ffffff;
   color: var(--ink);
   padding: 7px 12px;
   font-size: 0.85rem;
@@ -209,14 +210,14 @@ html, body {
 }
 
 .btn-primary {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--accent);
+  border-color: var(--accent);
   color: #fff;
 }
 
 .btn-primary:hover {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
 }
 
 .btn-warn {
