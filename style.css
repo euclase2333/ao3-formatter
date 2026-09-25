@@ -146,13 +146,9 @@ html, body {
 .preview-area .fs-large  { font-size: 1.3em; }
 .preview-area .fs-small  { font-size: 0.85em; }
 .preview-area .fs-normal { font-size: 1em; }
-.preview-area .lh-tight  { line-height: 1.2; }
-.preview-area .lh-loose  { line-height: 2; }
-.preview-area .lh-normal { line-height: 1.6; }
-.preview-area .sp-tight  { margin-top: 0.3em; margin-bottom: 0.3em; }
-.preview-area .sp-loose  { margin-top: 1.5em; margin-bottom: 1.5em; }
-.preview-area .sp-normal { margin-top: 0; margin-bottom: 1em; }
 .preview-area .indent    { text-indent: 2em; }
+/* 行距 / 段距是全文级别的数值设置，由 script.js 动态生成一个 <style> 标签控制，
+   默认值（1.6 倍行距 / 1em 段距）与下面的初始值一致，脚本加载后会立即生效一次。 */
 
 /* ---------- 选项区 ---------- */
 .options-panel {
@@ -185,6 +181,40 @@ html, body {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.number-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.number-row input[type="range"] {
+  flex: 1;
+  accent-color: var(--accent);
+}
+
+.number-row input[type="number"] {
+  width: 62px;
+  padding: 4px 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: #ffffff;
+}
+
+.number-row input[type="number"]:focus,
+.number-row input[type="range"]:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.unit-label {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  min-width: 1.5em;
 }
 
 /* ---------- 按钮通用样式 ---------- */
