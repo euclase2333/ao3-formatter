@@ -71,6 +71,50 @@ body {
   }
 }
 
+/* ---------- 手机端修复（≤768px）----------
+   目标：不改变电脑端任何样式，也不改动上面 960px 断点的规则；
+   只在更窄的手机宽度下，把「面板固定高度 + overflow:hidden」
+   这种电脑/平板上没问题、但在手机上会把底部按钮和溢出内容裁掉的写法，
+   换成「面板高度随内容自适应、整页可以正常滚动到底」。 */
+@media (max-width: 768px) {
+  html, body {
+    /* 电脑端让 body 自己不滚动、只让 workspace 内部滚动；
+       手机上改成让整个页面随内容自然变高、正常滚动到底，
+       这样无论输入框/预览区里内容多长，下载/复制按钮都不会被裁掉。 */
+    height: auto;
+    overflow: visible;
+  }
+
+  .workspace {
+    /* 不再依赖 workspace 内部单独滚动，交给整页滚动 */
+    overflow: visible;
+    padding-bottom: 32px; /* 给最后一块面板留出底部空间，避免贴边 */
+  }
+
+  .panel {
+    /* 覆盖 960px 断点里给的固定视口高度（75vh / min 340 / max 640），
+       改成随内容自适应高度，避免内容一多就被 overflow:hidden 裁掉。 */
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .options-panel {
+    /* 面板本身已经是自适应高度，不再需要单独的内部滚动条 */
+    overflow-y: visible;
+  }
+
+  #rawInput,
+  .preview-area {
+    /* 面板高度变成自适应后，flex:1 不再能撑出高度，
+       改用固定的默认最小高度，让输入框/预览区在手机上一打开就够大；
+       内容超出这个高度时，各自的 overflow-y: auto 仍然保证可以单独滚动。 */
+    flex: none;
+    min-height: 280px;
+  }
+}
+
 .panel {
   background: var(--paper-panel);
   border: 1px solid var(--line);
