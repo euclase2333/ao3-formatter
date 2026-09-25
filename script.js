@@ -85,16 +85,17 @@
     }
     // 每一行都算一段，空行不再跳过，而是保留成一个空段落，
     // 这样行距/段距（作用在每个 p 上）对空行也同样生效。
-    // 首行缩进默认对所有段落生效（class="indent"），不需要手动选中；
-    // 之后仍可以选中某几段，用右侧「开关首行缩进」按钮单独取消/恢复。
+    // 载入时默认不加首行缩进（class="indent"），避免和用户手动打的缩进重复；
+    // 缩进统一交给右侧「首行缩进」按钮：不选中文字点击 = 对全文生效，
+    // 选中某几段再点击 = 只对选中的段落单独开关。
     const lines = text.split('\n').map(p => p.trim());
 
     const html = lines
-      .map(p => '<p class="indent">' + (p.length > 0 ? escapeHtml(p) : '&nbsp;') + '</p>')
+      .map(p => '<p>' + (p.length > 0 ? escapeHtml(p) : '&nbsp;') + '</p>')
       .join('\n');
 
     previewArea.innerHTML = html;
-    setStatus('已载入 ' + lines.length + ' 段到预览区（空行已保留，首行缩进默认开启）');
+    setStatus('已载入 ' + lines.length + ' 段到预览区');
   });
 
   // ---------- 获取选区涉及到的"块级元素"（预览区的直接子元素） ----------
@@ -145,15 +146,28 @@
   }
 
   // 给选中的块级元素开关某个 class（目前只有首行缩进用到）
+  // 没有选中任何文字时，默认对预览区里的全部段落生效
   function toggleClass(cls) {
-    const blocks = getSelectedBlocks();
+    let blocks = getSelectedBlocks();
+    let wholeDoc = false;
+
     if (blocks.length === 0) {
-      setStatus('请先在预览区选中一段文字');
+      blocks = Array.from(previewArea.children);
+      wholeDoc = true;
+    }
+    if (blocks.length === 0) {
+      setStatus('预览区还没有内容');
       return;
     }
+
     const allHave = blocks.every(b => b.classList.contains(cls));
     blocks.forEach(b => b.classList.toggle(cls, !allHave));
-    setStatus(allHave ? '已取消首行缩进' : '已开启首行缩进');
+
+    if (wholeDoc) {
+      setStatus(allHave ? '已取消全文首行缩进' : '已开启全文首行缩进');
+    } else {
+      setStatus(allHave ? '已取消首行缩进' : '已开启首行缩进');
+    }
   }
 
   // 引用：把选中的段落包一层 <blockquote>；再点一次取消
