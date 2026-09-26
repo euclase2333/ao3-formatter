@@ -110,7 +110,10 @@
 
   function getSelectedBlocks() {
     const sel = window.getSelection();
-    if (!sel || sel.rangeCount === 0) return [];
+    // sel.isCollapsed 说明只是光标停在某处，并没有真正拖选文字，
+    // 这种情况要当成"没有选中"处理，否则光标停留的那一段会被
+    // 误当成"选中的段落"，导致首行缩进等按钮永远只作用于光标所在段。
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return [];
     const range = sel.getRangeAt(0);
     if (!previewArea.contains(range.commonAncestorContainer)) return [];
 
